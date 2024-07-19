@@ -4,6 +4,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhubpwd')
+        SLACK_CREDENTIALS = credentials('slack-token-id')
     }
     stages {
         stage('Cleanup Workspace') {
@@ -35,6 +36,7 @@ pipeline {
                     steps {
                         script {
                             dir('java-app') {
+                                sh 'ls -l' // Check files
                                 withDockerRegistry([url: '', credentialsId: 'dockerhubpwd']) {
                                     sh 'docker build -t pramila188/java-app .'
                                     sh 'docker tag pramila188/java-app:latest index.docker.io/pramila188/java-app:latest'
@@ -49,6 +51,7 @@ pipeline {
                     steps {
                         script {
                             dir('python-app') {
+                                sh 'ls -l' // Check files
                                 withDockerRegistry([url: '', credentialsId: 'dockerhubpwd']) {
                                     sh 'docker build -t pramila188/python-app:latest .'
                                     sh 'docker tag pramila188/python-app:latest index.docker.io/pramila188/python-app:latest'
@@ -64,7 +67,7 @@ pipeline {
     post {
         always {
             cleanWs()
-            slackSend(channel: '#build-status', color: '#FF0000', message: "Build failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)")
+            slackSend(channel: '#build-status', color: '#FF0000', message: "Build failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)", tokenCredentialId: 'slack-token-id')
         }
     }
 }
