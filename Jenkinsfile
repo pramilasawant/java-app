@@ -4,7 +4,7 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhubpwd')
-        SLACK_CREDENTIALS = credentials('slack-token-id')
+        SLACK_CREDENTIALS = credentials('slackpwd')
     }
     stages {
         stage('Cleanup Workspace') {
