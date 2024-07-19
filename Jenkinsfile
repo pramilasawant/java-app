@@ -68,13 +68,3 @@ pipeline {
         }
     }
 }
-
-        }
-    }
-    post {
-        always {
-            cleanWs()
-            slackSend(channel: '#build-status', color: '#FF0000', message: "Build failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)")
-        }
-    }
-}
